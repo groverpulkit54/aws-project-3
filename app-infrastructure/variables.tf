@@ -48,3 +48,8 @@ variable "ecr_image_url" {
   description = "ECR image URI (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest)"
   default = "594541045824.dkr.ecr.ap-south-1.amazonaws.com/demo-java-microservices-1:latest"
 }
+
+variable "ecr_image_url_2" {
+  description = "ECR image URL for the user service"
+  default = "594541045824.dkr.ecr.ap-south-1.amazonaws.com/demo-java-microservices-2:latest"
+}
