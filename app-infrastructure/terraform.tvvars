@@ -1,0 +1,2 @@
+vpc_id        = "vpc-0c2a34d558258afbe"
+ecr_image_url = "594541045824.dkr.ecr.ap-south-1.amazonaws.com/demo-java-microservices-1:latest"
