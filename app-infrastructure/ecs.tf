@@ -43,3 +43,44 @@ resource "aws_ecs_service" "app" {
 
   depends_on = [aws_lb_listener.http]
 }
+
+resource "aws_ecs_task_definition" "user_service" {
+  family                   = "user-service-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([{
+    name  = "user-service"
+    image = var.ecr_image_url_2
+    portMappings = [{
+      containerPort = 8080
+      hostPort      = 8080
+    }]
+  }])
+}
+
+resource "aws_ecs_service" "user_service" {
+  name            = "user-service"
+  cluster         = aws_ecs_cluster.app.id
+  launch_type     = "FARGATE"
+  desired_count   = 1
+  task_definition = aws_ecs_task_definition.user_service.arn
+
+  network_configuration {
+    subnets           = var.private_subnets_ids
+    security_groups  = [aws_security_group.ecs_service_sg.id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.ecs_tg_2.arn
+    container_name   = "user-service"
+    container_port   = 8080
+  }
+
+  depends_on = [aws_lb_listener_rule.user_service_rule]
+}
+
